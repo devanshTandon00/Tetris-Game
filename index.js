@@ -90,6 +90,10 @@ function merge(arena, player){
   });
 };
 
+function pieces(){
+
+}
+
 function playerDrop() {
   player.pos.y++; // we choose y and it increases because it is gng down where y increases.
   if (collide(arena, player)) {
