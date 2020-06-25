@@ -21,12 +21,12 @@ const player = {
 }
 
 /*
-Task 2 after adding keydown eventListener: Do not let the tetrics go through the brick wall at the bottom, right, left
+Task 2 after adding keydown eventListener: Do not let the tetris go through the brick wall at the bottom, right, left
 y = ROW, x = COL
 CONCEPT: player has its own matrix. Arena is basically a 12(col) * 20(row) 2D table of 0's.
 In this table we need to check if the matrix[y][x] is
 We add player.pos.y to y to check the current row the player is in right now.
-we run the for loop till for the length of matrix because thats all we are interested in.
+we run the for loop till the length of matrix because thats all we are interested in.
 if the arena has a row and a col at the specficied locations and they are not 0, collide.
 */
 
@@ -76,7 +76,7 @@ function drawMatrix(matrix, offset) {
 };
 
 //merge the values of the player into the arena or copy the values of player into arena.
-//arena is arranged as such (y first x next because when we cosole log, it shows it like that)
+//arena is arranged as such (y first x next because when we cosole.log, it shows it like that)
 // we add + player.pos.y and + player.pos.x cz that gives u the real time position of the block. If we do not do that
 // every time merge will be called, it will put the block at the same position. Remove + player.pos.y and see for yourself.
 
@@ -107,11 +107,19 @@ function playerMove(dir){
   }
 }
 
+// if collides on the left wall, add offset
+// when it collides on the right wall, subract two. 
 function playerRotate(dir){
+  let offset = 1;
   rotate(player.matrix, dir);
+
+  while(collide(arena, player)){
+    player.pos.x += offset;
+    if(collide(arena, player)){
+      player.pos.x -= 2;
+    }
+  }
 }
-// When we add the event listener, we find two issues to resolve.
-// Task 1: Write the rotate function to rotate the tetris
 
 function rotate(matrix, dir) {
   // we say matrix.length because thats an indication of the number of rows and does not change.
@@ -136,8 +144,6 @@ function rotate(matrix, dir) {
   }
 };
 
-// we need to implement functionality to drop the piece (one block at a time)
-
 let dropCounter = 0;
 let dropInterval = 1000; // this is in milliseconds. So every second we drop.
 
@@ -147,7 +153,6 @@ let start = 0;
 function update(timestamp = 0){
   const elapsed = timestamp - start;
 
-  // console.log(elapsed);
   dropCounter += elapsed;
   if(dropCounter > dropInterval){
     playerDrop();
@@ -170,7 +175,7 @@ document.addEventListener('keydown', e => {
   else if(e.keyCode === 40){
     playerDrop(); // down
   }
-  // key q  
+  // key q
   else if(e.keyCode == 81){
     playerRotate(-1);
   }
