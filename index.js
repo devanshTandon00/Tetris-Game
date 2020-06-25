@@ -108,7 +108,7 @@ function playerMove(dir){
 }
 
 // if collides on the left wall, add offset
-// when it collides on the right wall, subract two. 
+// when it collides on the right wall, subract two.
 function playerRotate(dir){
   let offset = 1;
   rotate(player.matrix, dir);
