@@ -107,11 +107,33 @@ function playerMove(dir){
   }
 }
 
+function playerRotate(dir){
+  rotate(player.matrix, dir);
+}
 // When we add the event listener, we find two issues to resolve.
-// Task 1: Write the rotate function to rotate the tetrics
+// Task 1: Write the rotate function to rotate the tetris
 
-function rotate(){
-
+function rotate(matrix, dir) {
+  // we say matrix.length because thats an indication of the number of rows and does not change.
+  // this is transposing (rows to columns)
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < y; x++) {
+      var temp = matrix[x][y];
+      matrix[x][y] = matrix[y][x];
+      matrix[y][x] = temp;
+      // [
+      //   matrix[x][y], matrix[y][x]
+      // ] = [
+      //   matrix[y][x], matrix[x][y]
+      // ];
+    }
+  }
+  if (dir > 0){
+    matrix.forEach(row => row.reverse());
+  }
+  else{
+    matrix.reverse();
+  }
 };
 
 // we need to implement functionality to drop the piece (one block at a time)
@@ -148,10 +170,12 @@ document.addEventListener('keydown', e => {
   else if(e.keyCode === 40){
     playerDrop(); // down
   }
+  // key q  
+  else if(e.keyCode == 81){
+    playerRotate(-1);
+  }
+  // key w
+  else if(e.keyCode == 87){
+    playerRotate(1);
+  }
 });
-
-
-
-// This is my tester
-
-// ANother commit
