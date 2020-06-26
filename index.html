@@ -2,16 +2,35 @@
 
 <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="styles.css">
+  <!-- <link rel="stylesheet" href="styles.css"> -->
   <title>My Own Tetris</title>
   <style>
+
   canvas{
-    border: dotted .2em;
+    border-style: groove;
+    height: 86%;
+    border-radius: 3px;
+    width:
   }
-  </style>
+
+  body{
+    background-image: url(image.jpg);
+    font-style: italic;
+    text-align: center;
+    font-size: 3em;
+    overflow: hidden;
+  }
+
+  #score{
+    color: #f0a500;
+  }
+
+</style>
 </head>
 
 <body>
+  <div id = "score">
+  </div>
   <canvas id="tetris" width="240" height="400">
   </canvas>
   <script src="index.js"></script>

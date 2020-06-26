@@ -6,14 +6,15 @@ const arena = createMatrix(12, 20);
 
 //creates an oject.
 position = {
-  x: 5,
-  y: 5
+  x: 0,
+  y: 0,
 };
 
 // this is another object
 const player = {
   pos: position,
-  matrix: piece('T'),
+  matrix: piece('L'),
+  score: 0,
 }
 
 const colors = [
@@ -27,22 +28,24 @@ const colors = [
     '#3877FF',
 ];
 
-// basically look at the entire arena and find if there is a filled row
-// Logic: take that row, fill with zeroes, add to top of array
-// function clearLine(){
-//   for(let y = arena.length - 1; y > 0; y--){
-//     for(let x = 0; x < arena[y].length; x++){
-//       if(arena[y][x] === 0){
-//         continue;
-//       }
-//     }
-//
-//     const row = arena.splice(y,1)[0].fill(0);
-//     arena.unshift(row);
-//     y++;
-//   }
-// }
+function arenaSweep() {
+    let rowCount = 1;
+    outer: for (let y = arena.length -1; y > 0; --y) {
+        for (let x = 0; x < arena[y].length; ++x) {
+            if (arena[y][x] === 0) {
+                continue outer;
+            }
+        }
 
+        const row = arena.splice(y, 1)[0].fill(0);
+        arena.unshift(row);
+        ++y;
+
+        player.score += rowCount * 10;
+        rowCount = rowCount * 2;
+    }
+
+  }
 /*
 Task 2 after adding keydown eventListener: Do not let the tetris go through the brick wall at the bottom, right, left
 y = ROW, x = COL
@@ -69,7 +72,6 @@ function collide(arena, player) {
 }
 
 // This creates multiple arrays inside the matrix array.
-// Basically creates the array as well.
 function createMatrix(w, h) {
   const matrix = [];
   while (h--) {
@@ -117,11 +119,13 @@ function merge(arena, player) {
 };
 
 function playerDrop() {
-  player.pos.y++; // we choose y and it increases because it is gng down where y increases.
+  player.pos.y++; // we choose y as it increases because it is gng down where y increases.
   if (collide(arena, player)) {
     player.pos.y--;
     merge(arena, player);
-    // clearLine();
+    playerReset();
+    arenaSweep();
+    updateScore();
   }
   dropCounter = 0;
 }
@@ -202,6 +206,8 @@ function playerReset(){
 
   if(collide(arena, player)){
     arena.forEach(row => row.fill(0));
+    player.score = 0;
+    updateScore();
   }
 }
 
@@ -213,21 +219,20 @@ function rotate(matrix, dir) {
       var temp = matrix[x][y];
       matrix[x][y] = matrix[y][x];
       matrix[y][x] = temp;
-      // [
-      //   matrix[x][y], matrix[y][x]
-      // ] = [
-      //   matrix[y][x], matrix[x][y]
-      // ];
     }
   }
 
   if (dir > 0) {
     matrix.forEach(row => row.reverse());
   }
-  // } else {
-  //   matrix.reverse();
-  // }
+  else {
+    matrix.reverse();
+  }
 };
+
+function updateScore(){
+  document.getElementById('score').innerText = player.score;
+}
 
 let dropCounter = 0;
 let dropInterval = 1000; // this is in milliseconds. So every second we drop.
@@ -248,8 +253,6 @@ function update(timestamp = 0) {
   requestAnimationFrame(update);
 }
 
-update();
-
 document.addEventListener('keydown', e => {
   if (e.keyCode === 37) {
     playerMove(-1); //left
@@ -267,3 +270,7 @@ document.addEventListener('keydown', e => {
     playerRotate(1);
   }
 });
+
+update();
+updateScore();
+playerReset();
